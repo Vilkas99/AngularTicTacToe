@@ -1,0 +1,62 @@
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-tablero',
+  templateUrl: './tablero.component.html',
+  styleUrls: ['./tablero.component.scss'],
+})
+export class TableroComponent implements OnInit {
+  cuadros: any[];
+  xSiguiente: boolean;
+  winner: string;
+
+  constructor() {}
+
+  ngOnInit(): void {
+    this.nuevaPartida();
+  }
+
+  nuevaPartida() {
+    this.cuadros = Array(9).fill(null);
+    this.winner = null;
+    this.xSiguiente = true;
+  }
+
+  get jugador() {
+    return this.xSiguiente ? 'X' : 'O';
+  }
+
+  realizarMovimiento(idx: number) {
+    if (!this.cuadros[idx]) {
+      this.cuadros.splice(idx, 1, this.jugador);
+      this.xSiguiente = !this.xSiguiente;
+    }
+
+    this.winner = this.calcularGanador();
+  }
+
+  calcularGanador() {
+    const lineas = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 5],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+
+    for (let i = 0; i < lineas.length; i++) {
+      const [a, b, c] = lineas[i];
+      if (
+        this.cuadros[a] &&
+        this.cuadros[a] === this.cuadros[b] &&
+        this.cuadros[a] === this.cuadros[c]
+      ) {
+        return this.cuadros[a];
+      }
+    }
+    return null;
+  }
+}
